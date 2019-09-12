@@ -80,12 +80,12 @@ public class MainActivity extends AppCompatActivity {
     NotificationManager mNotificationManager;
     ProgressBar battery, ram, audio, internal, external;
     RelativeLayout.LayoutParams params1, params2;
-    TextView wifispeed, dataspeed, mobiledatastate, center, batper, totalram;
+    TextView wifispeed, dataspeed, mobiledatastate, center, batper, totalram,lightintensty;
     TextView ramper, accx, accy, accz, acct, datentime, proximiti, playtime, totalSD, totalexternal;
     TextView light, proximity, gps, fingure, face, magnetometer, gyroscope, accelerometer;
     ScrollView scrollView;
     SensorManager mySensorManager;
-    Sensor myProximitySensor, acceleratorSensor;
+    Sensor myProximitySensor, acceleratorSensor,mlightSensor;
     SeekBar brightness, volume;
     Switch torch, bluetooth, dnd, auto, aeroplane, touch, vibrate;
     Vibrator vibrator;
@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         top = findViewById(R.id.top);
         down = findViewById(R.id.down);
         center = findViewById(R.id.center);
+        lightintensty=findViewById(R.id.lightintenstity);
 
 
         systemWritePermission();
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
         proximitiSection();
         gravitySection();
         updateAllSection();
+        lightintenstySection();
 
     }
 
@@ -943,6 +945,29 @@ public class MainActivity extends AppCompatActivity {
         myHandlerThread.quit();
         super.onDestroy();
     }
+
+    public void lightintenstySection() {
+        mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mlightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        mySensorManager.registerListener(lightintenstySensorsEventListener, mlightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+    }
+
+
+    SensorEventListener lightintenstySensorsEventListener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+                lightintensty.setText(event.values[0] + "Lux");
+            }
+        }
+    };
 
 
 }
