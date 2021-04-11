@@ -4,6 +4,7 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    tools:viewBindingIgnore="true"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -119,7 +120,7 @@
             android:background="@drawable/linearlayout"
             android:gravity="center">
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/torch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -174,7 +175,7 @@
             android:background="@drawable/linearlayout"
             android:gravity="center">
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/bluetooth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -293,7 +294,7 @@
             android:background="@drawable/linearlayout"
             android:gravity="center">
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/dnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -337,7 +338,7 @@
             android:background="@drawable/linearlayout"
             android:gravity="center">
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/auto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -352,7 +353,7 @@
             android:background="@drawable/linearlayout"
             android:gravity="center">
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/aeroplane"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -389,8 +390,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/linearlayout"
             android:gravity="center">
-
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/touch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -406,7 +406,7 @@
             android:background="@drawable/linearlayout"
             android:gravity="center">
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/vibrate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -514,7 +514,6 @@
                     android:paddingRight="10dp"
                     android:text="Record"
                     android:textSize="15sp" />
-                android:textSize="15sp" />
 
                 <Button
                     android:id="@+id/stopr"
@@ -1135,7 +1134,6 @@
                 android:id="@+id/lightintenstity"
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"
-                android:layout_alignParentRight="true"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/tvinfo"
                 android:gravity="center"

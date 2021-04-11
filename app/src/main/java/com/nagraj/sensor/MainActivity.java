@@ -2,6 +2,7 @@ package com.nagraj.sensor;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     SensorManager mySensorManager;
     Sensor myProximitySensor, acceleratorSensor,mlightSensor;
     SeekBar brightness, volume;
-    Switch torch, bluetooth, dnd, auto, aeroplane, touch, vibrate;
+    SwitchCompat torch, bluetooth, dnd, auto, aeroplane, touch, vibrate;
     Vibrator vibrator;
     Window window;
 
@@ -101,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = getApplicationContext();
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
         wifispeed = findViewById(R.id.wifispeed);
         wifi = findViewById(R.id.wifi);
         mobiledata = findViewById(R.id.mobiledata);
@@ -201,38 +202,32 @@ public class MainActivity extends AppCompatActivity {
             wifi.setText("Disable Wifi");
 
         }
-        wifi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (wifistatus == true) {
-                    wifiManager.setWifiEnabled(false);
-                    wifistatus = false;
-                    wifi.setText("Enable Wifi");
-                } else {
-                    wifiManager.setWifiEnabled(true);
-                    wifistatus = true;
-                    wifi.setText("Disable Wifi");
-                }
+        wifi.setOnClickListener(view -> {
+            if (wifistatus) {
+                wifiManager.setWifiEnabled(false);
+                wifistatus = false;
+                wifi.setText("Enable Wifi");
+            } else {
+                wifiManager.setWifiEnabled(true);
+                wifistatus = true;
+                wifi.setText("Disable Wifi");
             }
         });
 
     }
 
     public void hotspotSection() {
-        hotspot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$TetherSettingsActivity"));
-                startActivity(intent);
+        hotspot.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$TetherSettingsActivity"));
+            startActivity(intent);
 
-            }
         });
     }
 
     public void mobiledataSection() {
         mobiledatastatus = isMobileDataEnabled();
-        if (mobiledatastatus == true) {
+        if (mobiledatastatus) {
             mobiledatastate.setText("ON");
         } else {
             mobiledatastate.setText("OFF");
@@ -241,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mobiledatastatus = isMobileDataEnabled();
-                if (mobiledatastatus == true) {
+                if (mobiledatastatus) {
                     mobiledatastate.setText("ON");
                 } else {
                     mobiledatastate.setText("OFF");
@@ -276,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     String cameraId = cm.getCameraIdList()[0];
                     cm.setTorchMode(cameraId, isChecked);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         });
@@ -299,7 +294,6 @@ public class MainActivity extends AppCompatActivity {
         batper.setLayoutParams(params1);
 
     }
-
 
     public void bluetoothSection() {
         bta = BluetoothAdapter.getDefaultAdapter();
@@ -356,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
             Settings.System.putInt(cResolver,Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
             brigh = Settings.System.getInt(cResolver, Settings.System.SCREEN_BRIGHTNESS);
             brightness.setProgress((brigh * 100) / 255);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -457,15 +451,12 @@ public class MainActivity extends AppCompatActivity {
     public void aeroplaneSection() {
         cResolver = getContentResolver();
         window = getWindow();
-        aeroplane.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean enabled) {
-                try {
-                    android.provider.Settings.Global.putInt(getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enabled ? 1 : 0);
-                }catch(Exception e){
-                    Toast.makeText(context,e+"",Toast.LENGTH_LONG).show();
+        aeroplane.setOnCheckedChangeListener((compoundButton, enabled) -> {
+            try {
+                Settings.Global.putInt(getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enabled ? 1 : 0);
+            }catch(Exception e){
+                Toast.makeText(context,e+"",Toast.LENGTH_LONG).show();
 
-                }
             }
         });
     }
@@ -484,16 +475,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void touchSection() {
-        touch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                } else {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        touch.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            } else {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-                }
             }
         });
     }
@@ -501,32 +489,26 @@ public class MainActivity extends AppCompatActivity {
     public void powerSection() {
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        vibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    long pattern[] = {60, 120, 180, 240, 300, 360, 420, 480};
+        vibrate.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                long[] pattern = {60, 120, 180, 240, 300, 360, 420, 480};
 
-                    vibrator.vibrate(pattern, 5);
-                } else {
-                    vibrator.cancel();
-                }
+                vibrator.vibrate(pattern, 5);
+            } else {
+                vibrator.cancel();
             }
         });
 
     }
 
     public void cameraSection() {
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                } else {
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    cameraIntent.putExtra("android.provider.extras.CAMERA_FACING", 1);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                }
+        camera.setOnClickListener(view -> {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+            } else {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra("android.provider.extras.CAMERA_FACING", 1);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
     }
@@ -553,6 +535,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             cameraIV.setImageBitmap(photo);
@@ -586,30 +569,27 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayer.start();
                 }
             });
-            pause.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    stopr.setEnabled(false);
-                    record.setEnabled(true);
-                    play.setEnabled(true);
-                    pause.setEnabled(false);
+            pause.setOnClickListener(view -> {
+                stopr.setEnabled(false);
+                record.setEnabled(true);
+                play.setEnabled(true);
+                pause.setEnabled(false);
 
-                    mediaPlayer.pause();
-                    int td = mediaPlayer.getDuration();
-                    int cd = mediaPlayer.getCurrentPosition();
-                    int rem = (int) ((cd * 100) / (double) td);
-                    audio.setProgress(rem);
-                    String duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                    long dur1 = Long.parseLong(duration);
-                    long cdur = (rem * dur1) / 100;
-                    int num = (int) (cdur % 60000) / 1000;
-                    String seconds = String.format("%02d", num);
-                    String minutes = String.valueOf(cdur / 60000);
-                    String string = playtime.getText().toString();
-                    string = string.substring(string.length() - 5);
-                    playtime.setText(minutes + ":" + seconds + string);
+                mediaPlayer.pause();
+                int td = mediaPlayer.getDuration();
+                int cd = mediaPlayer.getCurrentPosition();
+                int rem = (int) ((cd * 100) / (double) td);
+                audio.setProgress(rem);
+                String duration1 = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                long dur1 = Long.parseLong(duration1);
+                long cdur = (rem * dur1) / 100;
+                int num1 = (int) (cdur % 60000) / 1000;
+                String seconds1 = String.format("%02d", num1);
+                String minutes1 = String.valueOf(cdur / 60000);
+                String string = playtime.getText().toString();
+                string = string.substring(string.length() - 5);
+                playtime.setText(minutes1 + ":" + seconds1 + string);
 
-                }
             });
         } catch (Exception e) {
             Toast.makeText(this, "Error=" + e, Toast.LENGTH_LONG).show();
@@ -619,67 +599,60 @@ public class MainActivity extends AppCompatActivity {
 
         mediaRecorder = new MediaRecorder();
         boolean per = checkPermission();
-        if (per) {
-        } else {
+        if (!per) {
             requestPermission();
         }
 
-        record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
+        record.setOnClickListener(view -> {
+            try {
 
-                    mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                    mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                    mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-                    mediaRecorder.setOutputFile(uri);
+                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+                mediaRecorder.setOutputFile(uri);
 
 
-                    stopr.setEnabled(true);
-                    record.setEnabled(false);
-                    play.setEnabled(false);
-                    pause.setEnabled(false);
-                    mediaRecorder.prepare();
-                    mediaRecorder.start();
-                    Toast.makeText(context, "Recording started", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), e + "", Toast.LENGTH_LONG).show();
+                stopr.setEnabled(true);
+                record.setEnabled(false);
+                play.setEnabled(false);
+                pause.setEnabled(false);
+                mediaRecorder.prepare();
+                mediaRecorder.start();
+                Toast.makeText(context, "Recording started", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), e + "", Toast.LENGTH_LONG).show();
 
-                }
             }
         });
 
-        stopr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
+        stopr.setOnClickListener(view -> {
+            try {
 
-                    stopr.setEnabled(false);
-                    record.setEnabled(true);
-                    play.setEnabled(true);
-                    pause.setEnabled(false);
+                stopr.setEnabled(false);
+                record.setEnabled(true);
+                play.setEnabled(true);
+                pause.setEnabled(false);
 
-                    mediaRecorder.stop();
+                mediaRecorder.stop();
 
 
-                    metaRetriever.setDataSource(uri);
-                    String duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                    long dur = Long.parseLong(duration);
-                    long num = (dur % 60000) / 1000;
-                    String tseconds = String.format("%02d", num);
-                    String tminutes = String.valueOf(dur / 60000);
-                    int td = mediaPlayer.getDuration();
-                    int cd = mediaPlayer.getCurrentPosition();
-                    int rem4 = (int) ((cd * 100) / (double) td);
-                    long cdur = (rem4 * dur) / 100;
-                    int cnum = (int) (cdur % 60000) / 1000;
-                    String cseconds = String.format("%02d", cnum);
-                    String cminutes = String.valueOf(cdur / 60000);
-                    String time = cminutes + ":" + cseconds + "/" + tminutes + ":" + tseconds;
-                    playtime.setText(time);
-                } catch (Exception e) {
-                    Toast.makeText(context, "Error=" + e, Toast.LENGTH_LONG).show();
-                }
+                metaRetriever.setDataSource(uri);
+                String duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                long dur = Long.parseLong(duration);
+                long num = (dur % 60000) / 1000;
+                String tseconds = String.format("%02d", num);
+                String tminutes = String.valueOf(dur / 60000);
+                int td = mediaPlayer.getDuration();
+                int cd = mediaPlayer.getCurrentPosition();
+                int rem4 = (int) ((cd * 100) / (double) td);
+                long cdur = (rem4 * dur) / 100;
+                int cnum = (int) (cdur % 60000) / 1000;
+                String cseconds = String.format("%02d", cnum);
+                String cminutes = String.valueOf(cdur / 60000);
+                String time = cminutes + ":" + cseconds + "/" + tminutes + ":" + tseconds;
+                playtime.setText(time);
+            } catch (Exception e) {
+                Toast.makeText(context, "Error=" + e, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -744,25 +717,18 @@ public class MainActivity extends AppCompatActivity {
         boolean mag = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
         string = loc ? "Yes" : "No";
         gps.setText(string);
-        string = "P";
         string = acc ? "Yes" : "No";
         accelerometer.setText(string);
-        string = "P";
         string = pro ? "Yes" : "No";
         proximity.setText(string);
-        string = "P";
         string = lig ? "Yes" : "No";
         light.setText(string);
-        string = "P";
         string = gyr ? "Yes" : "No";
         gyroscope.setText(string);
-        string = "P";
         string = fig ? "Yes" : "No";
         fingure.setText(string);
-        string = "P";
         string = fac ? "Yes" : "No";
         face.setText(string);
-        string = "P";
         string = mag ? "Yes" : "No";
         magnetometer.setText(string);
     }
@@ -823,10 +789,10 @@ public class MainActivity extends AppCompatActivity {
             float z = -event.values[2];
             double t = Math.sqrt(x * x + y * y + z * z);
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            x = Float.valueOf(decimalFormat.format(x));
-            y = Float.valueOf(decimalFormat.format(y));
-            z = Float.valueOf(decimalFormat.format(z));
-            t = Double.valueOf(decimalFormat.format(t));
+            x = Float.parseFloat(decimalFormat.format(x));
+            y = Float.parseFloat(decimalFormat.format(y));
+            z = Float.parseFloat(decimalFormat.format(z));
+            t = Double.parseDouble(decimalFormat.format(t));
             accx.setText(x + "");
             accy.setText(y + "");
             accz.setText(z + "");
