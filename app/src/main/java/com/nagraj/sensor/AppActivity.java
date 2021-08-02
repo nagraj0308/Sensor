@@ -63,14 +63,14 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class AppActivity extends AppCompatActivity {
     AudioManager audioManager;
     BluetoothAdapter bta;
-    Button wifi, mobiledata, hotspot, location, camera, play, pause, record, stopr;
+    Button wifi, mobileData, hotspot, location, camera, play, pause, record, stopR;
     ContentResolver cResolver;
     CameraManager cm;
     Context context;
     DataHandler myDataHandler;
     File root = new File(Environment.getRootDirectory().getParent());
     ImageView cameraIV, left, right, top, down;
-    IntentFilter ifilter;
+    IntentFilter iFilter;
     Intent batteryStatus;
     LinearLayout linearLayout;
     MyHandlerThread myHandlerThread;
@@ -80,19 +80,19 @@ public class AppActivity extends AppCompatActivity {
     NotificationManager mNotificationManager;
     ProgressBar battery, ram, audio, internal, external;
     RelativeLayout.LayoutParams params1, params2;
-    TextView wifispeed, dataspeed, mobiledatastate, center, batper, totalram,lightintensty;
+    TextView wifispeed, dataspeed, mobiledatastate, center, batper, totalram, lightintensty;
     TextView ramper, accx, accy, accz, acct, datentime, proximiti, playtime, totalSD, totalexternal;
     TextView light, proximity, gps, fingure, face, magnetometer, gyroscope, accelerometer;
     ScrollView scrollView;
     SensorManager mySensorManager;
-    Sensor myProximitySensor, acceleratorSensor,mlightSensor;
+    Sensor myProximitySensor, acceleratorSensor, mlightSensor;
     SeekBar brightness, volume;
     SwitchCompat torch, bluetooth, dnd, auto, aeroplane, touch, vibrate;
     Vibrator vibrator;
     Window window;
 
-    int brigh, vol;
-    boolean wifistatus,mobiledatastatus;
+    int bright, vol;
+    boolean wifiStatus, mobileDataStatus;
     final String uri = root.getPath() + "sdcard/Music/perfect.mp3";
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
@@ -105,7 +105,7 @@ public class AppActivity extends AppCompatActivity {
         context = getApplicationContext();
         wifispeed = findViewById(R.id.wifispeed);
         wifi = findViewById(R.id.wifi);
-        mobiledata = findViewById(R.id.mobiledata);
+        mobileData = findViewById(R.id.mobiledata);
         dataspeed = findViewById(R.id.dataspeed);
         mobiledatastate = findViewById(R.id.mobiledatastate);
         torch = findViewById(R.id.torch);
@@ -134,7 +134,7 @@ public class AppActivity extends AppCompatActivity {
         record = findViewById(R.id.record);
         play = findViewById(R.id.play);
         pause = findViewById(R.id.pause);
-        stopr = findViewById(R.id.stopr);
+        stopR = findViewById(R.id.stopr);
         internal = findViewById(R.id.internal);
         external = findViewById(R.id.external);
         totalexternal = findViewById(R.id.totalexternal);
@@ -157,7 +157,7 @@ public class AppActivity extends AppCompatActivity {
         top = findViewById(R.id.top);
         down = findViewById(R.id.down);
         center = findViewById(R.id.center);
-        lightintensty=findViewById(R.id.lightintenstity);
+        lightintensty = findViewById(R.id.lightintenstity);
 
 
         systemWritePermission();
@@ -190,25 +190,25 @@ public class AppActivity extends AppCompatActivity {
 
     public void wifiSection() {
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wifistatus = wifiManager.isWifiEnabled();
-        if (wifistatus == true) {
+        wifiStatus = wifiManager.isWifiEnabled();
+        if (wifiStatus == true) {
             wifiManager.setWifiEnabled(false);
-            wifistatus = false;
+            wifiStatus = false;
             wifi.setText("Enable Wifi");
         } else {
             wifiManager.setWifiEnabled(true);
-            wifistatus = true;
+            wifiStatus = true;
             wifi.setText("Disable Wifi");
 
         }
         wifi.setOnClickListener(view -> {
-            if (wifistatus) {
+            if (wifiStatus) {
                 wifiManager.setWifiEnabled(false);
-                wifistatus = false;
+                wifiStatus = false;
                 wifi.setText("Enable Wifi");
             } else {
                 wifiManager.setWifiEnabled(true);
-                wifistatus = true;
+                wifiStatus = true;
                 wifi.setText("Disable Wifi");
             }
         });
@@ -225,17 +225,17 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void mobiledataSection() {
-        mobiledatastatus = isMobileDataEnabled();
-        if (mobiledatastatus) {
+        mobileDataStatus = isMobileDataEnabled();
+        if (mobileDataStatus) {
             mobiledatastate.setText("ON");
         } else {
             mobiledatastate.setText("OFF");
         }
-        mobiledata.setOnClickListener(new View.OnClickListener() {
+        mobileData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mobiledatastatus = isMobileDataEnabled();
-                if (mobiledatastatus) {
+                mobileDataStatus = isMobileDataEnabled();
+                if (mobileDataStatus) {
                     mobiledatastate.setText("ON");
                 } else {
                     mobiledatastate.setText("OFF");
@@ -278,8 +278,8 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void batterySection() {
-        ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        batteryStatus = context.registerReceiver(null, ifilter);
+        iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        batteryStatus = context.registerReceiver(null, iFilter);
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         int rem = (int) ((level * 100) / (float) scale);
@@ -346,9 +346,9 @@ public class AppActivity extends AppCompatActivity {
         window = getWindow();
 
         try {
-            Settings.System.putInt(cResolver,Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-            brigh = Settings.System.getInt(cResolver, Settings.System.SCREEN_BRIGHTNESS);
-            brightness.setProgress((brigh * 100) / 255);
+            Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            bright = Settings.System.getInt(cResolver, Settings.System.SCREEN_BRIGHTNESS);
+            brightness.setProgress((bright * 100) / 255);
         } catch (Exception ignored) {
 
         }
@@ -453,8 +453,8 @@ public class AppActivity extends AppCompatActivity {
         aeroplane.setOnCheckedChangeListener((compoundButton, enabled) -> {
             try {
                 Settings.Global.putInt(getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enabled ? 1 : 0);
-            }catch(Exception e){
-                Toast.makeText(context,e+"",Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(context, e + "", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -542,7 +542,7 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void recordnplaySection() {
-        stopr.setEnabled(false);
+        stopR.setEnabled(false);
         ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, 101);
         metaRetriever = new MediaMetadataRetriever();
         try {
@@ -556,20 +556,15 @@ public class AppActivity extends AppCompatActivity {
             String seconds = String.format("%02d", num);
             String minutes = String.valueOf(dur / 60000);
             playtime.setText("PT/" + minutes + ":" + seconds);
-            play.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    stopr.setEnabled(false);
-                    record.setEnabled(false);
-                    play.setEnabled(false);
-                    pause.setEnabled(true);
-
-                    mediaPlayer.start();
-                }
+            play.setOnClickListener(view -> {
+                stopR.setEnabled(false);
+                record.setEnabled(false);
+                play.setEnabled(false);
+                pause.setEnabled(true);
+                mediaPlayer.start();
             });
             pause.setOnClickListener(view -> {
-                stopr.setEnabled(false);
+                stopR.setEnabled(false);
                 record.setEnabled(true);
                 play.setEnabled(true);
                 pause.setEnabled(false);
@@ -592,7 +587,6 @@ public class AppActivity extends AppCompatActivity {
             });
         } catch (Exception e) {
             Toast.makeText(this, "Error=" + e, Toast.LENGTH_LONG).show();
-
         }
 
 
@@ -611,7 +605,7 @@ public class AppActivity extends AppCompatActivity {
                 mediaRecorder.setOutputFile(uri);
 
 
-                stopr.setEnabled(true);
+                stopR.setEnabled(true);
                 record.setEnabled(false);
                 play.setEnabled(false);
                 pause.setEnabled(false);
@@ -624,17 +618,13 @@ public class AppActivity extends AppCompatActivity {
             }
         });
 
-        stopr.setOnClickListener(view -> {
+        stopR.setOnClickListener(view -> {
             try {
-
-                stopr.setEnabled(false);
+                stopR.setEnabled(false);
                 record.setEnabled(true);
                 play.setEnabled(true);
                 pause.setEnabled(false);
-
                 mediaRecorder.stop();
-
-
                 metaRetriever.setDataSource(uri);
                 String duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                 long dur = Long.parseLong(duration);
@@ -883,8 +873,8 @@ public class AppActivity extends AppCompatActivity {
                             try {
                                 long rem5 = Long.valueOf((long) msg.obj);
                                 dataspeed.setText(rem5 + "");
-                                mobiledatastatus = isMobileDataEnabled();
-                                if (mobiledatastatus == true) {
+                                mobileDataStatus = isMobileDataEnabled();
+                                if (mobileDataStatus == true) {
                                     mobiledatastate.setText("ON");
                                 } else {
                                     mobiledatastate.setText("OFF");
