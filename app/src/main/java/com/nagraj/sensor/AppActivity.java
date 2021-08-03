@@ -191,7 +191,7 @@ public class AppActivity extends AppCompatActivity {
     public void wifiSection() {
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifiStatus = wifiManager.isWifiEnabled();
-        if (wifiStatus == true) {
+        if (wifiStatus) {
             wifiManager.setWifiEnabled(false);
             wifiStatus = false;
             wifi.setText("Enable Wifi");
@@ -220,7 +220,6 @@ public class AppActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$TetherSettingsActivity"));
             startActivity(intent);
-
         });
     }
 
@@ -231,19 +230,16 @@ public class AppActivity extends AppCompatActivity {
         } else {
             mobiledatastate.setText("OFF");
         }
-        mobileData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mobileDataStatus = isMobileDataEnabled();
-                if (mobileDataStatus) {
-                    mobiledatastate.setText("ON");
-                } else {
-                    mobiledatastate.setText("OFF");
-                }
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
-                startActivity(intent);
+        mobileData.setOnClickListener(view -> {
+            mobileDataStatus = isMobileDataEnabled();
+            if (mobileDataStatus) {
+                mobiledatastate.setText("ON");
+            } else {
+                mobiledatastate.setText("OFF");
             }
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+            startActivity(intent);
         });
 
     }
@@ -265,13 +261,11 @@ public class AppActivity extends AppCompatActivity {
 
     public void torchSection() {
         cm = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        torch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
-                    String cameraId = cm.getCameraIdList()[0];
-                    cm.setTorchMode(cameraId, isChecked);
-                } catch (Exception ignored) {
-                }
+        torch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            try {
+                String cameraId = cm.getCameraIdList()[0];
+                cm.setTorchMode(cameraId, isChecked);
+            } catch (Exception ignored) {
             }
         });
 
@@ -296,27 +290,21 @@ public class AppActivity extends AppCompatActivity {
 
     public void bluetoothSection() {
         bta = BluetoothAdapter.getDefaultAdapter();
-        bluetooth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    bta.enable();
-                } else {
-                    bta.disable();
-                }
+        bluetooth.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                bta.enable();
+            } else {
+                bta.disable();
             }
         });
     }
 
 
     public void locationSection() {
-        location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$LocationSettingsActivity"));
-                startActivity(intent);
-            }
+        location.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$LocationSettingsActivity"));
+            startActivity(intent);
         });
     }
 
@@ -359,8 +347,6 @@ public class AppActivity extends AppCompatActivity {
                 Settings.System
                         .putInt(getApplicationContext().getContentResolver(),
                                 Settings.System.SCREEN_BRIGHTNESS, (i * 255) / 100);
-
-
             }
 
             @Override
@@ -376,10 +362,8 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void systemWritePermission() {
-
         final Context context = getApplicationContext();
         boolean settingsCanWrite = Settings.System.canWrite(context);
-
         if (!settingsCanWrite) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
             startActivity(intent);
@@ -395,17 +379,11 @@ public class AppActivity extends AppCompatActivity {
         cResolver = getContentResolver();
         window = getWindow();
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-
-        dnd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
-                } else {
-                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
-
-                }
+        dnd.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+            } else {
+                mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
             }
         });
     }
@@ -435,16 +413,9 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void autoSection() {
-
         cResolver = getContentResolver();
         window = getWindow();
-        auto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean enabled) {
-                Settings.System.putInt(getApplicationContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enabled ? 1 : 0);
-
-            }
-        });
+        auto.setOnCheckedChangeListener((compoundButton, enabled) -> Settings.System.putInt(getApplicationContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enabled ? 1 : 0));
     }
 
     public void aeroplaneSection() {
@@ -455,7 +426,6 @@ public class AppActivity extends AppCompatActivity {
                 Settings.Global.putInt(getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enabled ? 1 : 0);
             } catch (Exception e) {
                 Toast.makeText(context, e + "", Toast.LENGTH_LONG).show();
-
             }
         });
     }
@@ -515,10 +485,7 @@ public class AppActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == MY_CAMERA_PERMISSION_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
@@ -528,8 +495,6 @@ public class AppActivity extends AppCompatActivity {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
-
-
     }
 
     @Override
@@ -603,8 +568,6 @@ public class AppActivity extends AppCompatActivity {
                 mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                 mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
                 mediaRecorder.setOutputFile(uri);
-
-
                 stopR.setEnabled(true);
                 record.setEnabled(false);
                 play.setEnabled(false);
@@ -907,8 +870,6 @@ public class AppActivity extends AppCompatActivity {
         mySensorManager.registerListener(lightintenstySensorsEventListener, mlightSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
-
-
     SensorEventListener lightintenstySensorsEventListener = new SensorEventListener() {
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
